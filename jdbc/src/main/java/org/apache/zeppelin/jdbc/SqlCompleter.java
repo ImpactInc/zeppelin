@@ -178,58 +178,13 @@ public class SqlCompleter extends StringsCompleter {
   public static Set<String> getDataModelMetadataCompletions(Connection connection)
       throws SQLException {
     Set<String> completions = new TreeSet<>();
-    if (null != connection) {
-      getColumnNames(connection.getMetaData(), completions);
-      getSchemaNames(connection.getMetaData(), completions);
-    }
+//    if (null != connection) {
+//      getColumnNames(connection.getMetaData(), completions);
+//      getSchemaNames(connection.getMetaData(), completions);
+//    }
     return completions;
   }
 
-  private static void getColumnNames(DatabaseMetaData meta, Set<String> names) throws SQLException {
-
-    try {
-      ResultSet columns = meta.getColumns(meta.getConnection().getCatalog(), null, "%", "%");
-      try {
-
-        while (columns.next()) {
-          // Add the following strings: (1) column name, (2) table name
-          String name = columns.getString("TABLE_NAME");
-          if (!isBlank(name)) {
-            names.add(name);
-            names.add(columns.getString("COLUMN_NAME"));
-            // names.add(columns.getString("TABLE_NAME") + "." + columns.getString("COLUMN_NAME"));
-          }
-        }
-      } finally {
-        columns.close();
-      }
-
-      logger.debug(Joiner.on(',').join(names));
-    } catch (Exception e) {
-      logger.error("Failed to retrieve the column name", e);
-    }
-  }
-
-  private static void getSchemaNames(DatabaseMetaData meta, Set<String> names) throws SQLException {
-
-    try {
-      ResultSet schemas = meta.getSchemas();
-      try {
-        while (schemas.next()) {
-          String schemaName = schemas.getString("TABLE_SCHEM");
-          if (schemaName == null)
-            schemaName = "";
-          if (!isBlank(schemaName)) {
-            names.add(schemaName + ".");
-          }
-        }
-      } finally {
-        schemas.close();
-      }
-    } catch (Exception e) {
-      logger.error("Failed to retrieve the column name", e);
-    }
-  }
 
   // test purpose only
   WhitespaceArgumentDelimiter getSqlDelimiter() {
